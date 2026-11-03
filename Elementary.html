@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Elementary: learn the periodic table</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#101828;--mute:#667085;--line:#e4e7ec;--acc:#0d7a68;--accsoft:#e3f4f0;--accink:#fff;--ok:#12805c;--bad:#c4321f;--ts:70%;--tl:94%;--bl:80%;--sh:0 1px 2px rgba(16,24,40,.05);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1114;--card:#151c21;--ink:#eef2f4;--mute:#93a1a9;--line:#263139;--acc:#4fd1b5;--accsoft:#14312d;--accink:#07211c;--ok:#4ad08f;--bad:#ff8f80;--ts:35%;--tl:22%;--bl:34%;--sh:none}}
+:root[data-theme="dark"]{--bg:#0c1114;--card:#151c21;--ink:#eef2f4;--mute:#93a1a9;--line:#263139;--acc:#4fd1b5;--accsoft:#14312d;--accink:#07211c;--ok:#4ad08f;--bad:#ff8f80;--ts:35%;--tl:22%;--bl:34%;--sh:none}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.6 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding:24px 16px 56px}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.logo{width:38px;height:38px;border-radius:11px;background:var(--acc);color:var(--accink);display:grid;place-items:center;font-weight:700;font-size:16px;letter-spacing:-.02em}
+h1{font-size:24px;line-height:1.1;margin:0;font-weight:700;letter-spacing:-.025em}
+h2{font-weight:650;letter-spacing:-.015em}
+.sub{color:var(--mute);margin:0 0 20px;font-size:14px}
+nav{display:flex;gap:4px;margin-bottom:18px;padding:4px;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh);overflow-x:auto}
+nav button{font:inherit;font-weight:600;font-size:14px;background:none;border:0;color:var(--mute);padding:8px 16px;cursor:pointer;border-radius:9px;white-space:nowrap;flex:1}
+nav button[aria-selected=true]{background:var(--accsoft);color:var(--acc)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:12px}
+label{font-size:13px;color:var(--mute);display:flex;gap:8px;align-items:center;font-weight:500}
+select{font:inherit;font-size:14px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:9px;padding:7px 10px;max-width:100%}
+.scroll{overflow-x:auto;padding:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh)}
+.pt{display:grid;grid-template-columns:repeat(18,minmax(40px,1fr));grid-template-rows:repeat(7,auto) 14px repeat(2,auto);gap:4px;min-width:760px}
+.el{font:inherit;background:hsl(var(--h) var(--ts) var(--tl));color:var(--ink);border:1px solid hsl(var(--h) 45% var(--bl));border-radius:8px;padding:3px 2px;aspect-ratio:1/1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;line-height:1.1;position:relative;transition:opacity .15s,transform .1s}
+.el:hover{transform:translateY(-1px)}
+.el b{font-size:15px;font-weight:700;letter-spacing:-.01em}
+.el small{font-size:9.5px;color:var(--mute);font-weight:500}
+.el.dim{opacity:.14}
+.el.sel{outline:2px solid var(--ink);outline-offset:1px;z-index:1}
+.el.good{outline:3px solid var(--ok);z-index:1}
+.el.badc{outline:3px solid var(--bad);z-index:1}
+.el.wk::after{content:"";position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:var(--bad)}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.chip{font:inherit;font-size:12.5px;font-weight:500;display:flex;gap:7px;align-items:center;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:4px 11px 4px 8px;border-radius:99px;cursor:pointer}
+.chip:hover{border-color:var(--acc)}
+.chip i{width:10px;height:10px;border-radius:50%;background:hsl(var(--h) 60% 55%)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:14px 0;box-shadow:var(--sh)}
+.lesson h2{margin:0 0 10px;font-size:22px}
+.lesson p{margin:0 0 10px;max-width:68ch}
+.rem{background:var(--accsoft);color:var(--ink);border-radius:10px;padding:10px 14px;font-weight:550;font-size:14px;margin:14px 0 0}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:16px}
+.btn{font:inherit;font-weight:600;font-size:14px;background:var(--acc);color:var(--accink);border:1px solid var(--acc);border-radius:10px;padding:10px 18px;cursor:pointer}
+.btn:hover{filter:brightness(1.07)}
+.btn.alt{background:var(--card);color:var(--ink);border-color:var(--line)}
+.btn:disabled{opacity:.4;cursor:default;filter:none}
+.steps{display:flex;gap:5px;flex-wrap:wrap;margin-left:auto}
+.steps button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--mute);font:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.steps button[aria-current=true]{background:var(--acc);color:var(--accink);border-color:var(--acc)}
+.detail{display:grid;grid-template-columns:auto 1fr;gap:6px 24px;align-items:center}
+.big{font-size:60px;font-weight:700;letter-spacing:-.03em;line-height:1;padding:14px 22px;border-radius:14px;background:hsl(var(--h) var(--ts) var(--tl));border:1px solid hsl(var(--h) 45% var(--bl));text-align:center}
+.big small{display:block;font-size:13px;font-weight:600;color:var(--mute);letter-spacing:0}
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px 18px;margin:0}
+.facts dt{font-size:12px;color:var(--mute);font-weight:500}.facts dd{margin:0;font-weight:600}
+.modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin:12px 0}
+.modes button{font:inherit;font-weight:600;text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer}
+.modes button:hover{border-color:var(--acc)}
+.modes button[aria-pressed=true]{border-color:var(--acc);background:var(--accsoft)}
+.modes span{display:block;font-size:13px;font-weight:400;color:var(--mute)}
+.q{font-size:clamp(21px,4vw,28px);font-weight:700;margin:8px 0 16px;letter-spacing:-.02em;line-height:1.25}
+.q b{color:var(--acc)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.opts button{font:inherit;font-weight:600;font-size:16px;padding:14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.opts button:hover:not(:disabled){border-color:var(--acc);background:var(--accsoft)}
+.opts button.good{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opts button.bad{background:var(--bad);color:#fff;border-color:var(--bad)}
+.meter{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:14px}
+.meter div{height:100%;background:var(--acc);border-radius:3px;transition:width .25s}
+.msg{min-height:1.6em;font-weight:600;margin-top:12px}
+.score{font-size:52px;font-weight:700;letter-spacing:-.03em;line-height:1}
+.miss{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.miss span{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px 10px;font-size:13px}
+.st{display:flex;gap:10px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.st.cur{font-weight:600}
+.st span{color:var(--mute);font-size:13px;font-weight:400}
+.flash{text-align:center}
+.flash .big{font-size:96px;display:inline-block;min-width:220px}
+input.ans{font:inherit;font-size:20px;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);width:100%;max-width:320px;margin-bottom:10px}
+.pts{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.road{display:flex;flex-direction:column;align-items:center;gap:18px;padding:22px 0;margin-top:8px;background:repeating-linear-gradient(to bottom,var(--line) 0 8px,transparent 8px 16px) center/3px 100% no-repeat}
+.nw{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--mute);font-weight:600}
+.node{width:64px;height:64px;border-radius:50%;border:0;font:inherit;font-weight:700;font-size:16px;cursor:pointer;background:var(--acc);color:var(--accink);box-shadow:0 5px 0 rgba(0,0,0,.22)}
+.node.q{border-radius:18px}
+.node.done{background:var(--ok)}
+.node.lock{background:var(--line);color:var(--mute);box-shadow:0 5px 0 rgba(0,0,0,.08);cursor:default}
+.node.cur{outline:5px solid var(--accsoft);outline-offset:3px}
+.stp{display:flex;gap:10px;align-items:center;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card);margin:8px 0;font-weight:600}
+.stp span{color:var(--mute);font-weight:400;font-size:13px;margin-left:auto}
+.stp.lock{opacity:.55}
+.modal{position:fixed;inset:0;background:rgba(10,16,20,.55);display:grid;place-items:center;padding:20px;z-index:20}
+.modal .card{max-width:420px;width:100%;margin:0;text-align:center}
+.modal .row{justify-content:center}
+.cf{position:fixed;top:-14px;width:9px;height:14px;border-radius:2px;animation:fall 2.4s ease-in forwards;z-index:30;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@keyframes pulse{50%{box-shadow:0 5px 0 rgba(0,0,0,.22),0 0 0 10px var(--accsoft)}}
+.node.cur{animation:pulse 2.2s ease-in-out infinite}
+.stk{font-weight:600;color:var(--acc);margin-left:8px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:520px){.detail{grid-template-columns:1fr}.big{font-size:46px}.card{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="brand"><span class="logo">El</span><h1>Elementary</h1></div>
+<p class="sub">Tell it how long you have, and it builds a step-by-step plan to learn every symbol, name and number.</p>
+<nav role="tablist" id="nav"></nav>
+<div id="main"></div>
+</div>
+<script>
+const RAW="H Hydrogen 1.008|He Helium 4.003|Li Lithium 6.94|Be Beryllium 9.012|B Boron 10.81|C Carbon 12.011|N Nitrogen 14.007|O Oxygen 15.999|F Fluorine 18.998|Ne Neon 20.18|Na Sodium 22.99|Mg Magnesium 24.305|Al Aluminum 26.982|Si Silicon 28.085|P Phosphorus 30.974|S Sulfur 32.06|Cl Chlorine 35.45|Ar Argon 39.95|K Potassium 39.098|Ca Calcium 40.078|Sc Scandium 44.956|Ti Titanium 47.867|V Vanadium 50.942|Cr Chromium 51.996|Mn Manganese 54.938|Fe Iron 55.845|Co Cobalt 58.933|Ni Nickel 58.693|Cu Copper 63.546|Zn Zinc 65.38|Ga Gallium 69.723|Ge Germanium 72.63|As Arsenic 74.922|Se Selenium 78.971|Br Bromine 79.904|Kr Krypton 83.798|Rb Rubidium 85.468|Sr Strontium 87.62|Y Yttrium 88.906|Zr Zirconium 91.224|Nb Niobium 92.906|Mo Molybdenum 95.95|Tc Technetium 98|Ru Ruthenium 101.07|Rh Rhodium 102.91|Pd Palladium 106.42|Ag Silver 107.87|Cd Cadmium 112.41|In Indium 114.82|Sn Tin 118.71|Sb Antimony 121.76|Te Tellurium 127.6|I Iodine 126.9|Xe Xenon 131.29|Cs Cesium 132.91|Ba Barium 137.33|La Lanthanum 138.91|Ce Cerium 140.12|Pr Praseodymium 140.91|Nd Neodymium 144.24|Pm Promethium 145|Sm Samarium 150.36|Eu Europium 151.96|Gd Gadolinium 157.25|Tb Terbium 158.93|Dy Dysprosium 162.5|Ho Holmium 164.93|Er Erbium 167.26|Tm Thulium 168.93|Yb Ytterbium 173.05|Lu Lutetium 174.97|Hf Hafnium 178.49|Ta Tantalum 180.95|W Tungsten 183.84|Re Rhenium 186.21|Os Osmium 190.23|Ir Iridium 192.22|Pt Platinum 195.08|Au Gold 196.97|Hg Mercury 200.59|Tl Thallium 204.38|Pb Lead 207.2|Bi Bismuth 208.98|Po Polonium 209|At Astatine 210|Rn Radon 222|Fr Francium 223|Ra Radium 226|Ac Actinium 227|Th Thorium 232.04|Pa Protactinium 231.04|U Uranium 238.03|Np Neptunium 237|Pu Plutonium 244|Am Americium 243|Cm Curium 247|Bk Berkelium 247|Cf Californium 251|Es Einsteinium 252|Fm Fermium 257|Md Mendelevium 258|No Nobelium 259|Lr Lawrencium 266|Rf Rutherfordium 267|Db Dubnium 268|Sg Seaborgium 269|Bh Bohrium 270|Hs Hassium 277|Mt Meitnerium 278|Ds Darmstadtium 281|Rg Roentgenium 282|Cn Copernicium 285|Nh Nihonium 286|Fl Flerovium 289|Mc Moscovium 290|Lv Livermorium 293|Ts Tennessine 294|Og Oganesson 294";
+const CATS=[
+{id:"alkali",label:"Alkali metal",h:10,z:[3,11,19,37,55,87]},
+{id:"alkaline",label:"Alkaline earth metal",h:40,z:[4,12,20,38,56,88]},
+{id:"transition",label:"Transition metal",h:220},
+{id:"post",label:"Post-transition metal",h:250,z:[13,31,49,50,81,82,83,84,113,114,115,116]},
+{id:"metalloid",label:"Metalloid",h:80,z:[5,14,32,33,51,52]},
+{id:"nonmetal",label:"Reactive nonmetal",h:140,z:[1,6,7,8,15,16,34]},
+{id:"halogen",label:"Halogen",h:175,z:[9,17,35,53,85,117]},
+{id:"noble",label:"Noble gas",h:290,z:[2,10,18,36,54,86,118]},
+{id:"lanth",label:"Lanthanide",h:325},
+{id:"actin",label:"Actinide",h:350}];
+const GAS=[1,2,7,8,9,10,17,18,36,54,86,118];
+function pos(n){if(n==1)return[1,1];if(n==2)return[1,18];if(n<=4)return[2,n-2];if(n<=10)return[2,n+8];if(n<=12)return[3,n-10];if(n<=18)return[3,n];if(n<=36)return[4,n-18];if(n<=54)return[5,n-36];if(n<=56)return[6,n-54];if(n<=70)return[9,n-54];if(n==71)return[6,3];if(n<=86)return[6,n-68];if(n<=88)return[7,n-86];if(n<=102)return[10,n-86];if(n==103)return[7,3];return[7,n-100]}
+const EL=RAW.split("|").map((s,i)=>{const[sym,name,mass]=s.split(" "),z=i+1,[r,c]=pos(z);
+let cat=CATS.find(k=>k.z&&k.z.includes(z));cat=cat?cat.id:z>=57&&z<=71?"lanth":z>=89&&z<=103?"actin":"transition";
+const f=r>=9;return{z,sym,name,mass,r,c,cat,g:f?null:c,p:f?r-3:r,b:f?"f":z==2||c<=2?"s":c>=13?"p":"d",st:z==80||z==35?"Liquid":GAS.includes(z)?"Gas":"Solid"}});
+const CAT=Object.fromEntries(CATS.map(k=>[k.id,k]));
+const byZ=z=>EL[z-1];
+const SC=[{id:"all",l:"Whole table",f:()=>1},{id:"f20",l:"First 20 elements",f:e=>e.z<=20},{id:"f36",l:"First 36 elements",f:e=>e.z<=36},{id:"f54",l:"First 54 elements",f:e=>e.z<=54},{id:"weak",l:"My weak spots",f:e=>{const p=prog[e.z];return p&&p[1]>0&&p[1]>=p[0]}},
+...CATS.map(k=>({id:"c_"+k.id,l:k.label+"s",f:e=>e.cat==k.id})),
+{id:"p2",l:"Period 2",f:e=>e.p==2&&e.r<9},{id:"p3",l:"Period 3",f:e=>e.p==3},{id:"p4",l:"Period 4",f:e=>e.p==4},
+{id:"g17",l:"Group 17 and 18",f:e=>e.g>=17},{id:"bs",l:"s-block",f:e=>e.b=="s"},{id:"bp",l:"p-block",f:e=>e.b=="p"},{id:"bd",l:"d-block",f:e=>e.b=="d"},{id:"bf",l:"f-block",f:e=>e.b=="f"}];
+let prog={};try{prog=JSON.parse(localStorage.getItem("ptprog")||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem("ptprog",JSON.stringify(prog))}catch(e){}};
+const scopeOf=id=>{const s=SC.find(x=>x.id==id)||SC[0];const l=EL.filter(s.f);return l.length?l:EL};
+const LESSONS=[
+{t:"How the table is built",b:["Every element is a different kind of atom, and the table lines them up by atomic number: the count of protons in the nucleus. Hydrogen has 1, helium 2, and so on up to 118.","Each row is a period and each column is a group. Elements in the same group have the same number of outer electrons, so they behave alike."],r:"Rows are periods (read left to right). Columns are groups (read top to bottom).",h:null,q:"all"},
+{t:"Metals, nonmetals and metalloids",b:["Most elements are metals: shiny, good at carrying heat and electricity, and easy to bend. Nonmetals sit at the upper right and are mostly dull or gaseous poor conductors.","A staircase from boron down to astatine separates the two. The elements on it, the metalloids, sit in between. Silicon is the famous one: a semiconductor, which is why chips are made from it."],r:"Metalloids: B, Si, Ge, As, Sb, Te.",h:e=>e.cat=="metalloid",q:"c_metalloid"},
+{t:"Groups 1 and 2: the reactive metals",b:["Group 1, the alkali metals, are soft enough to cut with a knife and react violently with water. They lose one electron to form +1 ions. Hydrogen sits above them but is a nonmetal gas.","Group 2, the alkaline earth metals, are harder and a little less reactive. They lose two electrons to form +2 ions. Calcium is in your bones and magnesium is in green leaves."],r:"Group 1: Li, Na, K, Rb, Cs, Fr. Group 2: Be, Mg, Ca, Sr, Ba, Ra.",h:e=>e.cat=="alkali"||e.cat=="alkaline",q:"c_alkali"},
+{t:"Transition metals",b:["The block in the middle, groups 3 to 12, holds the metals you meet every day: iron, copper, gold, silver, nickel, zinc, titanium.","They are hard, dense and strong, make colorful compounds, and can form ions with more than one charge (iron is Fe²⁺ or Fe³⁺). Many act as catalysts that speed up reactions."],r:"Iron, copper, silver and gold all live here. So does mercury, the only metal that is liquid at room temperature.",h:e=>e.cat=="transition",q:"c_transition"},
+{t:"Lanthanides and actinides",b:["Those two detached rows are the f-block. They are pulled out of the main table only to keep it from getting too wide.","Lanthanides (57–71) go into magnets, lasers and phone screens. Actinides (89–103) are all radioactive, including uranium and plutonium, and many of them are made only in laboratories."],r:"Lanthanides follow lanthanum. Actinides follow actinium.",h:e=>e.b=="f"||e.z==71||e.z==103,q:"bf"},
+{t:"Post-transition metals",b:["To the right of the transition metals sit aluminum, gallium, indium, tin, thallium, lead and bismuth, plus several heavy elements made in labs.","They are softer than transition metals, with lower melting points. Tin and lead have been used for cans, solder and pipes for thousands of years."],r:"Think of the metal staircase: these metals sit just left of it.",h:e=>e.cat=="post",q:"c_post"},
+{t:"Reactive nonmetals",b:["Hydrogen, carbon, nitrogen, oxygen, phosphorus, sulfur and selenium are the nonmetals of life. Carbon, hydrogen, nitrogen, oxygen, phosphorus and sulfur make up nearly all of your body.","They gain or share electrons instead of losing them, so they form molecules, such as O₂, H₂O and CO₂."],r:"CHNOPS: C, H, N, O, P, S.",h:e=>e.cat=="nonmetal",q:"c_nonmetal"},
+{t:"Group 17: the halogens",b:["Fluorine, chlorine, bromine, iodine and astatine are one electron short of a full outer shell, so they react eagerly, especially with group 1 metals.","The name means salt-former: sodium plus chlorine gives table salt. Going down the group, they change from gas (F, Cl) to liquid (Br) to solid (I, At)."],r:"Halogens form −1 ions. Reactivity falls as you go down the group.",h:e=>e.cat=="halogen",q:"c_halogen"},
+{t:"Group 18: the noble gases",b:["Helium, neon, argon, krypton, xenon and radon have full outer shells, so they almost never react.","That makes helium safe for balloons and argon useful for protecting welds. Neon, argon and the others glow different colors when electricity passes through them, which is how signs work."],r:"Noble gases: He, Ne, Ar, Kr, Xe, Rn.",h:e=>e.cat=="noble",q:"c_noble"},
+{t:"Blocks: s, p, d and f",b:["The shape of the table comes from which electron subshell is filling. Groups 1–2 and helium are the s-block. Groups 13–18 are the p-block. Together they are the main-group elements.","Groups 3–12 are the d-block (transition metals), and the two detached rows are the f-block."],r:"s + p = main group. d = transition. f = inner transition.",h:e=>e.b=="s"||e.b=="p",q:"bp"},
+{t:"Trends you can predict",b:["Across a period, left to right: atoms get smaller, and it gets harder to remove an electron (ionization energy rises) while atoms pull on electrons harder (electronegativity rises).","Down a group: atoms get bigger and everything reverses. So the most electronegative element is fluorine, and the most reactive metals are at the bottom left: cesium and francium."],r:"Up and to the right: more electronegative. Down and to the left: bigger and more reactive (metals).",h:e=>[9,55,87].includes(e.z),q:"g17"}];
+const MODES=[["sn","Symbol to name","See Fe, pick Iron"],["ns","Name to symbol","See Gold, pick Au"],["zn","Number to name","See 11, pick Sodium"],["nz","Name to number","See Neon, pick 10"],["cat","Category","Which family is it in?"],["find","Find it on the table","Click the right tile"]];
+let S={tab:"plan",lesson:0,scope:"all",show:"full",sel:null,mode:"sn",quiz:null};
+const $=s=>document.querySelector(s);
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function table(o){o=o||{};let h='<div class="scroll"><div class="pt" id="pt">';
+for(const e of EL){let c="el";if(o.on&&!o.on(e))c+=" dim";if(S.sel==e.z&&o.sel!==false)c+=" sel";const p=prog[e.z];if(o.dots&&p&&p[1]>0&&p[1]>=p[0])c+=" wk";
+const inner=o.show=="blank"?"":o.show=="num"?"<b>"+e.z+"</b>":"<b>"+e.sym+"</b><small>"+e.z+"</small>";
+h+='<button class="'+c+'" data-z="'+e.z+'" style="grid-row:'+e.r+';grid-column:'+e.c+';--h:'+CAT[e.cat].h+'" aria-label="'+(o.show=="full"?e.name:"Element "+e.z)+'">'+inner+'</button>'}
+return h+"</div></div>"}
+function legend(){return '<div class="legend">'+CATS.map(k=>'<button class="chip" data-sc="c_'+k.id+'" style="--h:'+k.h+'"><i></i>'+k.label+'</button>').join("")+"</div>"}
+function detail(){const e=S.sel&&byZ(S.sel);if(!e)return '<div class="card">Tap any element to see its details.</div>';
+return '<div class="card detail" style="--h:'+CAT[e.cat].h+'"><div class="big">'+e.sym+'<small>'+e.z+'</small></div><div><h2 style="margin:0 0 8px">'+e.name+'</h2><dl class="facts"><div><dt>Atomic mass</dt><dd>'+e.mass+'</dd></div><div><dt>Category</dt><dd>'+CAT[e.cat].label+'</dd></div><div><dt>Group</dt><dd>'+(e.g||"none (f-block)")+'</dd></div><div><dt>Period</dt><dd>'+e.p+'</dd></div><div><dt>Block</dt><dd>'+e.b+'</dd></div><div><dt>State at room temp</dt><dd>'+e.st+'</dd></div></dl></div></div>'}
+function scopeSel(){return '<label>Study<select id="scope">'+SC.map(s=>'<option value="'+s.id+'"'+(s.id==S.scope?" selected":"")+'>'+s.l+(s.id=="weak"&&!EL.some(s.f)?" (none yet)":"")+'</option>').join("")+"</select></label>"}
+function render(){$("#nav").innerHTML=[["plan","My plan"],["learn","My learning"],["explore","Explore"]].map(t=>'<button role="tab" data-tab="'+t[0]+'" aria-selected="'+(S.tab==t[0])+'">'+t[1]+"</button>").join("");
+const m=$("#main");
+if(S.tab=="plan")planView(m);else if(S.tab=="learn")roadView(m);else if(S.tab=="oldlearn"){const L=LESSONS[S.lesson],on=L.h?L.h:null;
+m.innerHTML='<div class="card lesson"><h2>'+(S.lesson+1)+'. '+L.t+'</h2>'+L.b.map(p=>"<p>"+p+"</p>").join("")+'<div class="rem">'+L.r+'</div><div class="row"><button class="btn alt" id="prev"'+(S.lesson?"":" disabled")+'>Previous</button><button class="btn" id="next"'+(S.lesson<LESSONS.length-1?"":" disabled")+'>Next lesson</button><button class="btn alt" id="qthis">Quiz this part</button><div class="steps">'+LESSONS.map((_,i)=>'<button data-ls="'+i+'" aria-label="Lesson '+(i+1)+'"'+(i==S.lesson?' aria-current="true"':"")+">"+(i+1)+"</button>").join("")+"</div></div></div>"+table({on,show:"full"})+legend()+detail()}
+else if(S.tab=="explore"){const f=scopeOf(S.scope).map(e=>e.z);
+m.innerHTML='<div class="bar">'+scopeSel()+'<label>Tiles show<select id="show"><option value="full"'+(S.show=="full"?" selected":"")+'>Symbol and number</option><option value="num"'+(S.show=="num"?" selected":"")+'>Number only</option><option value="blank"'+(S.show=="blank"?" selected":"")+'>Nothing (self-test)</option></select></label></div><p class="sub">Showing '+f.length+' elements. Red dots mark your weak spots. Tap a tile to reveal it.</p>'+table({on:e=>f.includes(e.z),show:S.show,dots:1})+legend()+detail()}
+else quiz(m)}
+function quiz(m){const q=S.quiz;
+if(!q||q.phase=="setup"){m.innerHTML='<div class="card"><h2 style="margin:0 0 4px">Quiz</h2><div class="bar">'+scopeSel()+'</div><p class="sub" style="margin:0">'+scopeOf(S.scope).length+' elements in this set. Ten questions per round.</p><div class="modes">'+MODES.map(x=>'<button data-mode="'+x[0]+'" aria-pressed="'+(S.mode==x[0])+'">'+x[1]+"<span>"+x[2]+"</span></button>").join("")+'</div><button class="btn" id="start">Start round</button></div>';return}
+if(q.phase=="done"){m.innerHTML='<div class="card"><div class="score">'+q.score+" / "+q.list.length+'</div><p>'+(q.score==q.list.length?"Perfect round.":q.score>=q.list.length*.7?"Solid. Run it again on the ones you missed.":"Keep going: missed elements now show a red dot and join “My weak spots”.")+"</p>"+(q.miss.length?'<div>Missed:</div><div class="miss">'+q.miss.map(z=>"<span>"+byZ(z).sym+" "+byZ(z).name+"</span>").join("")+"</div>":"")+'<div class="row"><button class="btn" id="start">Play again</button><button class="btn alt" id="setup">Change set or mode</button></div></div>';return}
+const Q=q.cur;m.innerHTML='<div class="card"><div class="meter"><div style="width:'+q.i/q.list.length*100+'%"></div></div><div class="q">'+Q.p+"</div>"+(S.mode=="find"?table({show:"blank",on:e=>scopeOf(S.scope).some(x=>x.z==e.z),sel:false}):'<div class="opts">'+Q.o.map((o,i)=>'<button data-o="'+i+'">'+o+"</button>").join("")+"</div>")+'<div class="msg" id="msg"></div><div class="row"><button class="btn" id="nextq" hidden>'+(q.i+1>=q.list.length?"See results":"Next question")+"</button></div></div>"}
+function mkQ(e,pool,mm){const m=mm||S.mode;const d=n=>shuf(pool.length>=4?pool:EL).filter(x=>x.z!=e.z).slice(0,3);
+const opts=(f,ans)=>{const o=shuf([e,...d()].map(f));return{o,a:o.indexOf(ans)}};let r;
+if(m=="sn"){r=opts(x=>x.name,e.name);r.p="Which element is <b>"+e.sym+"</b>?"}
+else if(m=="ns"){r=opts(x=>x.sym,e.sym);r.p="What is the symbol for <b>"+e.name+"</b>?"}
+else if(m=="zn"){r=opts(x=>x.name,e.name);r.p="Which element has atomic number <b>"+e.z+"</b>?"}
+else if(m=="nz"){r=opts(x=>String(x.z),String(e.z));r.p="What is the atomic number of <b>"+e.name+"</b>?"}
+else if(m=="cat"){const cs=shuf(CATS.filter(k=>k.id!=e.cat)).slice(0,3).concat(CAT[e.cat]);const o=shuf(cs).map(k=>k.label);r={o,a:o.indexOf(CAT[e.cat].label),p:"Which family is <b>"+e.name+"</b> ("+e.sym+") in?"}}
+else r={o:[],a:e.z,p:"Find <b>"+e.name+"</b> on the table"};
+r.z=e.z;return r}
+function ask(){const q=S.quiz;q.cur=mkQ(byZ(q.list[q.i]),scopeOf(S.scope));render()}
+function grade(ok,z){const q=S.quiz;prog[z]=prog[z]||[0,0];prog[z][ok?0:1]++;save();if(ok)q.score++;else q.miss.push(z);q.done=1}
+document.addEventListener("click",ev=>{const t=ev.target.closest("button");if(!t)return;const d=t.dataset;
+if(d.tab){S.tab=d.tab;S.sel=null;if(d.tab=="quiz"&&S.quiz&&S.quiz.phase!="setup")S.quiz=null;return render()}
+if(d.ls!=null){S.lesson=+d.ls;return render()}
+if(d.sc){S.scope=d.sc;S.tab="explore";return render()}
+if(t.id=="prev"){S.lesson--;return render()}if(t.id=="next"){S.lesson++;return render()}
+if(t.id=="qthis"){S.scope=LESSONS[S.lesson].q;S.tab="quiz";S.quiz=null;return render()}
+if(d.mode){S.mode=d.mode;return render()}
+if(t.id=="setup"){S.quiz=null;return render()}
+if(t.id=="start"){const l=shuf(scopeOf(S.scope)).slice(0,10);S.quiz={phase:"run",list:l.map(e=>e.z),i:0,score:0,miss:[]};return ask()}
+if(t.id=="nextq"){const q=S.quiz;q.i++;q.done=0;if(q.i>=q.list.length){q.phase="done";return render()}return ask()}
+if(d.o!=null){const q=S.quiz;if(q.done)return;const Q=q.cur,ok=+d.o==Q.a;grade(ok,Q.z);
+document.querySelectorAll(".opts button").forEach((b,i)=>{b.disabled=true;if(i==Q.a)b.classList.add("good");else if(i==+d.o)b.classList.add("bad")});
+$("#msg").textContent=ok?"Correct.":"Not quite. The answer is "+Q.o[Q.a]+".";$("#nextq").hidden=false;return}
+if(d.z){const z=+d.z;
+if(S.tab=="quiz"){const q=S.quiz;if(!q||q.done||S.mode!="find")return;const Q=q.cur,ok=z==Q.a;grade(ok,Q.z);
+document.querySelector('[data-z="'+Q.a+'"]').classList.add("good");if(!ok)t.classList.add("badc");
+$("#msg").textContent=ok?"Correct.":"Not quite. That was "+byZ(z).name+". The highlighted tile is "+byZ(Q.a).name+".";$("#nextq").hidden=false;return}
+S.sel=z;const y=scrollY;render();scrollTo(0,y)}});
+document.addEventListener("change",ev=>{const t=ev.target;if(t.id=="scope"){S.scope=t.value;if(S.tab=="quiz")S.quiz=null;render()}if(t.id=="show"){S.show=t.value;render()}});
+let PL=null;try{PL=JSON.parse(localStorage.getItem("ptplan"))}catch(e){}
+const savePL=()=>{try{localStorage.setItem("ptplan",JSON.stringify(PL))}catch(e){}};
+let W={q:0,days:14,count:20,size:5},R=null;
+const WQ=[["How long do you want to take to learn them?","days",[[7,"1 week"],[14,"2 weeks"],[30,"1 month"],[90,"3 months"]]],["How many elements do you want to learn?","count",[[20,"The first 20"],[36,"The first 36"],[54,"The first 54"],[118,"All 118"]]],["How fast should each step be?","size",[[3,"Slow: 3 at a time"],[5,"Steady: 5 at a time"],[8,"Fast: 8 at a time"],[10,"Very fast: 10 at a time"]]]];
+const chunks=()=>{const l=EL.slice(0,PL.count),o=[];for(let i=0;i<l.length;i+=PL.size)o.push(l.slice(i,i+PL.size));return o};
+const cw=h=>'<div class="card">'+h+'</div>';
+function pace(o){const K=Math.ceil(o.count/o.size),r=K/o.days;return{K,r,t:r>=1?"about "+Math.ceil(r)+" step"+(r>1?"s":"")+" a day":"one step about every "+Math.round(10/r)/10+" days"}}
+function planView(m){if(R)return runView(m);
+if(!PL){if(W.q<3){const[q,k,o]=WQ[W.q];m.innerHTML=cw('<p class="sub" style="margin:0">Question '+(W.q+1)+' of 3</p><h2 style="margin:4px 0 12px">'+q+'</h2><div class="modes">'+o.map(x=>'<button data-w="'+k+':'+x[0]+'">'+x[1]+'</button>').join("")+'</div>'+(W.q?'<button class="btn alt" data-pl="back">Back</button>':""));return}
+const p=pace(W);m.innerHTML=cw('<h2 style="margin:0 0 8px">Your plan</h2><p>You’ll learn the symbol, name and number of the first <b>'+W.count+'</b> elements in <b>'+W.days+' days</b>, in '+p.K+' steps: '+p.t+'.</p><p>Each step: study the cards, then pass 3 quizzes (80% or better) before moving on. Quiz 1 gives you a symbol or number and you pick the name. Quiz 2 gives you the name and you pick the symbol or number. Quiz 3 makes you type them.</p>'+(p.r>3?'<p class="rem">That is a heavy pace. Consider more days or smaller steps.</p>':"")+'<div class="row"><button class="btn" data-pl="go">Start my plan</button><button class="btn alt" data-pl="redo">Change answers</button></div>');return}
+const C=chunks(),cur=PL.ch.findIndex(c=>c.p<3),dn=PL.ch.filter(c=>c.p>=3).length,p=pace(PL);
+m.innerHTML=cw('<h2 style="margin:0 0 4px">My plan</h2><p class="sub" style="margin:0">'+PL.count+' elements in '+PL.days+' days: '+p.t+'. '+dn+' of '+C.length+' steps done.</p><div class="meter" style="margin-top:10px"><div style="width:'+dn/C.length*100+'%"></div></div>'+C.map((c,i)=>{const s=PL.ch[i];return'<div class="st'+(i==cur?" cur":"")+'"><div>Step '+(i+1)+'<br><span>'+c.map(e=>e.sym).join(" ")+'</span></div><span style="margin-left:auto">'+(s.p>=3?"Done":s.p?"Quizzes passed: "+s.p+" of 3":s.s?"Studied":i==cur?"Up next":"Locked")+'</span></div>'}).join("")+'<div class="row">'+(cur>=0?'<button class="btn" data-pl="step">'+(PL.ch[cur].s||PL.ch[cur].p?"Continue":"Start")+' step '+(cur+1)+'</button>':'<b>Plan complete. Try the Free quiz tab on the whole table.</b>')+'<button class="btn alt" data-pl="reset">Start over</button></div>')}
+function runView(m){const c=chunks()[R.ci];
+if(R.ph=="study"){const ls=c.slice(R.l*3,R.l*3+3),e=ls[R.i],k=CAT[e.cat];m.innerHTML=cw('<p class="sub" style="margin:0">Step '+(R.ci+1)+', lesson '+(R.l+1)+', card '+(R.i+1)+' of '+ls.length+'</p><div class="flash" style="--h:'+k.h+'"><div class="big">'+e.sym+'<small>'+e.z+'</small></div><h2 style="margin:10px 0 0">'+e.name+'</h2><p class="sub">Atomic number '+e.z+', '+k.label.toLowerCase()+'</p></div><div class="row" style="justify-content:center"><button class="btn alt" data-pl="cp"'+(R.i?"":" disabled")+'>Previous</button><button class="btn" data-pl="cn">'+(R.i<ls.length-1?"Next card":"Finish lesson")+'</button></div>');return}
+if(R.ph=="res"){const t=R.qs.length,need=Math.ceil(t*.8),ok=R.sc>=need;m.innerHTML=cw('<div class="score">'+R.sc+' / '+t+'</div><p>'+(ok?"Quiz "+R.n+" passed.":"You need "+need+" to pass. Retry, or review the lessons.")+'</p><div class="row">'+(ok?'<button class="btn" data-pl="'+(R.n<3?"nq":"fin")+'">'+(R.n<3?"Start quiz "+(R.n+1):"Finish step")+'</button>':'<button class="btn" data-pl="retry">Retry quiz '+R.n+'</button><button class="btn alt" data-pl="restudy">Review the lessons</button>')+'</div>')+(ok&&R.n==3?'<div class="modal"><div class="card"><h2 style="margin:0 0 6px">Step '+(R.ci+1)+' complete</h2><p>'+(R.pts?"You earned "+R.pts+" points on this quiz. ":"")+(PL.ch.every(c=>c.p>=3)?"That is your whole plan finished.":"Ready for the next step?")+'</p><div class="row"><button class="btn" data-pl="fin">'+(PL.ch.every(c=>c.p>=3)?"See my road":"Yes, next step")+'</button></div></div></div>':"");return}
+const Q=R.qs[R.i];m.innerHTML=cw('<p class="sub" style="margin:0">Step '+(R.ci+1)+', quiz '+R.n+' of 3</p><div class="meter"><div style="width:'+R.i/R.qs.length*100+'%"></div></div><div class="q">'+Q.p+'</div>'+(R.n==3?'<input class="ans" id="ans" autocomplete="off" autocapitalize="off" aria-label="Your answer"><br><button class="btn" data-pl="chk">Check</button>':'<div class="opts">'+Q.o.map((o,i)=>'<button data-po="'+i+'">'+o+'</button>').join("")+'</div>')+'<div class="msg" id="pm"></div><div class="row"><button class="btn" data-pl="nxt" hidden>Next</button></div>')}
+function buildQ(){const c=chunks()[R.ci],pool=EL.slice(0,PL.count),k=R.n==1?["sn","zn"]:["ns","nz"];R.qs=shuf(c.flatMap(e=>k.map(x=>mkQ(e,pool,x))));R.i=0;R.sc=0;R.ans=0;R.ph="q"}
+function fb(ok,a){$("#pm").textContent=ok?["Correct.","Nice one.","Exactly.","Got it."][Math.random()*4|0]:"Not quite. The answer is "+a+".";document.querySelector('[data-pl="nxt"]').hidden=false}
+document.addEventListener("click",ev=>{const t=ev.target.closest("button");if(!t)return;const d=t.dataset;
+if(d.w){const[k,v]=d.w.split(":");W[k]=+v;W.q++;return render()}
+if(d.po!=null&&R){if(R.ans)return;const Q=R.qs[R.i],ok=+d.po==Q.a;R.ans=1;if(ok)R.sc++;document.querySelectorAll(".opts button").forEach((b,i)=>{b.disabled=true;if(i==Q.a)b.classList.add("good");else if(i==+d.po)b.classList.add("bad")});return fb(ok,Q.o[Q.a])}
+if(d.nd){const k=d.nd,ci=PL.ch.findIndex(c=>c.p<3);if(k[0]=="L")R={ci,ph:"study",i:0,l:+k.slice(1),n:0};else{R={ci,n:+k.slice(1)};buildQ()}return render()}
+const a=d.pl;if(!a)return;
+if(a=="back")W.q--;else if(a=="redo")W.q=0;
+else if(a=="go"){PL={days:W.days,count:W.count,size:W.size,ch:[]};PL.ch=chunks().map(()=>({s:0,p:0}));PL.xp=0;S.tab="learn";savePL()}
+else if(a=="reset"){PL=null;R=null;W.q=0;try{localStorage.removeItem("ptplan")}catch(e){}}
+else if(a=="step")S.tab="learn";
+else if(a=="cp")R.i--;
+else if(a=="cn"){if(R.i<Math.min(3,chunks()[R.ci].length-R.l*3)-1)R.i++;else{const h=PL.ch[R.ci];if(R.l>=h.s){h.s=R.l+1;PL.xp=(PL.xp||0)+20;S.note="Lesson complete. You earned 20 points.";touch()}savePL();R=null}}
+else if(a=="retry")buildQ();
+else if(a=="restudy")R=null;
+else if(a=="nq"){R.n++;buildQ()}
+else if(a=="fin")R=null;
+else if(a=="chk"){if(R.ans)return;const inp=$("#ans"),Q=R.qs[R.i],ans=Q.o[Q.a],ok=inp.value.trim().toLowerCase()==ans.toLowerCase();R.ans=1;if(ok)R.sc++;inp.disabled=true;return fb(ok,ans)}
+else if(a=="nxt"){R.i++;R.ans=0;if(R.i>=R.qs.length){if(R.sc>=Math.ceil(R.qs.length*.8)){R.pts=0;if(PL.ch[R.ci].p<R.n){R.pts=R.sc*5+30+(R.n==3?50:0);PL.xp=(PL.xp||0)+R.pts}PL.ch[R.ci].p=Math.max(PL.ch[R.ci].p,R.n);touch();savePL()}R.ph="res";if(R.pts&&R.n==3)confetti()}}
+render();const inp=$("#ans");if(inp)inp.focus()});
+document.addEventListener("keydown",ev=>{if(ev.key=="Enter"&&ev.target.id=="ans"){const b=ev.target.parentNode.querySelector('[data-pl="chk"]');if(b)b.click()}});
+function touch(){const t=new Date().toDateString();if(PL.last!=t){PL.streak=PL.last==new Date(Date.now()-864e5).toDateString()?(PL.streak||0)+1:1;PL.last=t}}
+function confetti(){if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;const c=["#0d7a68","#f59e0b","#ef4444","#3b82f6","#a855f7"];for(let i=0;i<40;i++){const d=document.createElement("i");d.className="cf";d.style.cssText="left:"+Math.random()*100+"vw;background:"+c[i%5]+";animation-delay:"+Math.random()*.5+"s;animation-duration:"+(1.8+Math.random()*1.4)+"s";document.body.appendChild(d);setTimeout(()=>d.remove(),3500)}}
+function roadView(m){if(R)return runView(m);
+if(!PL){m.innerHTML=cw('<h2 style="margin:0 0 6px">No plan yet</h2><p>Answer three quick questions and your learning road appears here.</p><button class="btn" data-tab="plan">Set up my plan</button>');return}
+if(PL.xp==null)PL.xp=0;
+const C=chunks(),cur=PL.ch.findIndex(c=>c.p<3),xp=PL.xp,sy=c=>c.map(e=>e.sym).join(" ");let ns=[],key="";
+if(cur>=0){const s=PL.ch[cur],L=Math.ceil(C[cur].length/3);for(let l=0;l<L;l++)ns.push(["L"+l,"Lesson "+(l+1),l<s.s?"done":l==s.s?"cur":"lock"]);for(let q=1;q<=3;q++)ns.push(["Q"+q,"Quiz "+q,q<=s.p?"done":s.s>=L&&q==s.p+1?"cur":"lock"]);key=ns.find(n=>n[2]=="cur")[0]}
+m.innerHTML='<div class="card pts"><div><div class="score">'+xp+'</div><div class="sub" style="margin:0">points</div></div><div style="flex:1;min-width:150px"><b>Level '+(Math.floor(xp/200)+1)+'</b>'+(PL.streak&&(PL.last==new Date().toDateString()||PL.last==new Date(Date.now()-864e5).toDateString())?'<span class="stk">'+PL.streak+' day streak</span>':"")+'<div class="meter" style="margin:6px 0 0"><div style="width:'+xp%200/2+'%"></div></div></div>'+(key?'<button class="btn" data-nd="'+key+'">Continue</button>':"")+'</div>'+(S.note?'<div class="rem">'+S.note+'</div>':"")+C.slice(0,cur<0?C.length:cur).map((c,i)=>'<div class="stp"><b style="color:var(--ok)">\u2713</b>Step '+(i+1)+'<span>'+sy(c)+'</span></div>').join("")+(cur<0?cw('<h2 style="margin:0 0 6px">Plan complete</h2><p>You know all '+PL.count+' elements. Use Explore to keep them fresh.</p>'):cw('<h2 style="margin:0">Step '+(cur+1)+'</h2><p class="sub" style="margin:0">'+sy(C[cur])+'</p><div class="road">'+ns.map((n,j)=>{const L=n[0][0]=="L",num=L?+n[0].slice(1)+1:n[0].slice(1);return'<div class="nw" style="transform:translateX('+Math.round(Math.sin(j*1.2)*58)+'px)"><button class="node'+(L?"":" q")+" "+n[2]+'" data-nd="'+n[0]+'"'+(n[2]=="lock"||(n[2]=="done"&&!L)?" disabled":"")+'>'+(n[2]=="done"?"\u2713":n[0][0]+num)+'</button>'+n[1]+'</div>'}).join("")+'</div>'))+(cur<0?"":C.slice(cur+1,cur+4).map((c,i)=>'<div class="stp lock">Step '+(cur+i+2)+'<span>'+sy(c)+'</span></div>').join("")+(C.length>cur+4?'<p class="sub">+'+(C.length-cur-4)+' more steps</p>':""));S.note=null}
+render();
+</script>
+</body>
+</html>
