@@ -100,13 +100,15 @@ input.ans{font:inherit;font-size:20px;padding:12px 14px;border-radius:10px;borde
 @keyframes pulse{50%{box-shadow:0 5px 0 rgba(0,0,0,.22),0 0 0 10px var(--accsoft)}}
 .node.cur{animation:pulse 2.2s ease-in-out infinite}
 .stk{font-weight:600;color:var(--acc);margin-left:8px}
+#acct{margin-left:auto;display:flex;gap:6px}
+.sm{padding:6px 12px;font-size:13px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 @media (max-width:520px){.detail{grid-template-columns:1fr}.big{font-size:46px}.card{padding:16px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="brand"><span class="logo">El</span><h1>Elementary</h1></div>
+<div class="brand"><span class="logo">El</span><h1>Elementary</h1><div id="acct"></div></div>
 <p class="sub">Tell it how long you have, and it builds a step-by-step plan to learn every symbol, name and number.</p>
 <nav role="tablist" id="nav"></nav>
 <div id="main"></div>
@@ -163,7 +165,7 @@ function legend(){return '<div class="legend">'+CATS.map(k=>'<button class="chip
 function detail(){const e=S.sel&&byZ(S.sel);if(!e)return '<div class="card">Tap any element to see its details.</div>';
 return '<div class="card detail" style="--h:'+CAT[e.cat].h+'"><div class="big">'+e.sym+'<small>'+e.z+'</small></div><div><h2 style="margin:0 0 8px">'+e.name+'</h2><dl class="facts"><div><dt>Atomic mass</dt><dd>'+e.mass+'</dd></div><div><dt>Category</dt><dd>'+CAT[e.cat].label+'</dd></div><div><dt>Group</dt><dd>'+(e.g||"none (f-block)")+'</dd></div><div><dt>Period</dt><dd>'+e.p+'</dd></div><div><dt>Block</dt><dd>'+e.b+'</dd></div><div><dt>State at room temp</dt><dd>'+e.st+'</dd></div></dl></div></div>'}
 function scopeSel(){return '<label>Study<select id="scope">'+SC.map(s=>'<option value="'+s.id+'"'+(s.id==S.scope?" selected":"")+'>'+s.l+(s.id=="weak"&&!EL.some(s.f)?" (none yet)":"")+'</option>').join("")+"</select></label>"}
-function render(){if(API.indexOf("YOUR-PROJECT")<0&&!AUTH){loginView();return}$("#nav").innerHTML=[["plan","My plan"],["learn","My learning"],["explore","Explore"]].map(t=>'<button role="tab" data-tab="'+t[0]+'" aria-selected="'+(S.tab==t[0])+'">'+t[1]+"</button>").join("")+(AUTH?'<button data-pl="out">Log out</button>':"");
+function render(){if(API.indexOf("YOUR-PROJECT")<0&&!AUTH){loginView();return}$("#nav").innerHTML=[["plan","My plan"],["learn","My learning"],["explore","Explore"]].map(t=>'<button role="tab" data-tab="'+t[0]+'" aria-selected="'+(S.tab==t[0])+'">'+t[1]+"</button>").join("");$("#acct").innerHTML=(AUTH?'<button class="btn alt sm" data-pl="out">Log out</button>':"")+'<button class="btn alt sm" data-pl="wipe">Reset data</button>';
 const m=$("#main");
 if(S.tab=="plan")planView(m);else if(S.tab=="learn")roadView(m);else if(S.tab=="oldlearn"){const L=LESSONS[S.lesson],on=L.h?L.h:null;
 m.innerHTML='<div class="card lesson"><h2>'+(S.lesson+1)+'. '+L.t+'</h2>'+L.b.map(p=>"<p>"+p+"</p>").join("")+'<div class="rem">'+L.r+'</div><div class="row"><button class="btn alt" id="prev"'+(S.lesson?"":" disabled")+'>Previous</button><button class="btn" id="next"'+(S.lesson<LESSONS.length-1?"":" disabled")+'>Next lesson</button><button class="btn alt" id="qthis">Quiz this part</button><div class="steps">'+LESSONS.map((_,i)=>'<button data-ls="'+i+'" aria-label="Lesson '+(i+1)+'"'+(i==S.lesson?' aria-current="true"':"")+">"+(i+1)+"</button>").join("")+"</div></div></div>"+table({on,show:"full"})+legend()+detail()}
@@ -227,7 +229,7 @@ if(d.w){const[k,v]=d.w.split(":");W[k]=+v;W.q++;return render()}
 if(d.po!=null&&R){if(R.ans)return;const Q=R.qs[R.i],ok=+d.po==Q.a;R.ans=1;if(ok)R.sc++;document.querySelectorAll(".opts button").forEach((b,i)=>{b.disabled=true;if(i==Q.a)b.classList.add("good");else if(i==+d.po)b.classList.add("bad")});return fb(ok,Q.o[Q.a])}
 if(d.nd){const k=d.nd,ci=PL.ch.findIndex(c=>c.p<3);if(k[0]=="L")R={ci,ph:"study",i:0,l:+k.slice(1),n:0};else{R={ci,n:+k.slice(1)};buildQ()}return render()}
 const a=d.pl;if(!a)return;
-if(a=="out"){AUTH=null;R=null;W.q=0;S.tab="plan";PL=null;prog={};["ptauth","ptplan","ptprog"].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}})}else if(a=="back")W.q--;else if(a=="redo")W.q=0;
+if(a=="out"){AUTH=null;R=null;W.q=0;S.tab="plan";PL=null;prog={};["ptauth","ptplan","ptprog"].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}})}else if(a=="wipe"){if(!confirm("Reset all your plan, points and progress? This can\u2019t be undone."))return;PL=null;prog={};R=null;W.q=0;S.tab="plan";["ptplan","ptprog"].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});push(true)}else if(a=="back")W.q--;else if(a=="redo")W.q=0;
 else if(a=="go"){PL={days:W.days,count:W.count,size:W.size,ch:[]};PL.ch=chunks().map(()=>({s:0,p:0}));PL.xp=0;S.tab="learn";savePL()}
 else if(a=="reset"){PL=null;R=null;W.q=0;try{localStorage.removeItem("ptplan")}catch(e){}push()}
 else if(a=="step")S.tab="learn";
@@ -249,11 +251,11 @@ if(PL.xp==null)PL.xp=0;
 const C=chunks(),cur=PL.ch.findIndex(c=>c.p<3),xp=PL.xp,sy=c=>c.map(e=>e.sym).join(" ");let ns=[],key="";
 if(cur>=0){const s=PL.ch[cur],L=Math.ceil(C[cur].length/3);for(let l=0;l<L;l++)ns.push(["L"+l,"Lesson "+(l+1),l<s.s?"done":l==s.s?"cur":"lock"]);for(let q=1;q<=3;q++)ns.push(["Q"+q,"Quiz "+q,q<=s.p?"done":s.s>=L&&q==s.p+1?"cur":"lock"]);key=ns.find(n=>n[2]=="cur")[0]}
 m.innerHTML='<div class="card pts"><div><div class="score">'+xp+'</div><div class="sub" style="margin:0">points</div></div><div style="flex:1;min-width:150px"><b>Level '+(Math.floor(xp/200)+1)+'</b>'+(PL.streak&&(PL.last==new Date().toDateString()||PL.last==new Date(Date.now()-864e5).toDateString())?'<span class="stk">'+PL.streak+' day streak</span>':"")+'<div class="meter" style="margin:6px 0 0"><div style="width:'+xp%200/2+'%"></div></div></div>'+(key?'<button class="btn" data-nd="'+key+'">Continue</button>':"")+'</div>'+(S.note?'<div class="rem">'+S.note+'</div>':"")+C.slice(0,cur<0?C.length:cur).map((c,i)=>'<div class="stp"><b style="color:var(--ok)">\u2713</b>Step '+(i+1)+'<span>'+sy(c)+'</span></div>').join("")+(cur<0?cw('<h2 style="margin:0 0 6px">Plan complete</h2><p>You know all '+PL.count+' elements. Use Explore to keep them fresh.</p>'):cw('<h2 style="margin:0">Step '+(cur+1)+'</h2><p class="sub" style="margin:0">'+sy(C[cur])+'</p><div class="road">'+ns.map((n,j)=>{const L=n[0][0]=="L",num=L?+n[0].slice(1)+1:n[0].slice(1);return'<div class="nw" style="transform:translateX('+Math.round(Math.sin(j*1.2)*58)+'px)"><button class="node'+(L?"":" q")+" "+n[2]+'" data-nd="'+n[0]+'"'+(n[2]=="lock"||(n[2]=="done"&&!L)?" disabled":"")+'>'+(n[2]=="done"?"\u2713":n[0][0]+num)+'</button>'+n[1]+'</div>'}).join("")+'</div>'))+(cur<0?"":C.slice(cur+1,cur+4).map((c,i)=>'<div class="stp lock">Step '+(cur+i+2)+'<span>'+sy(c)+'</span></div>').join("")+(C.length>cur+4?'<p class="sub">+'+(C.length-cur-4)+' more steps</p>':""));S.note=null}
-const API="https://elementary-api-nine.vercel.app/api";
+const API="https://YOUR-PROJECT.vercel.app/api";
 let AUTH=null,L={mode:"login",err:""},T;try{AUTH=JSON.parse(localStorage.getItem("ptauth"))}catch(e){}
 async function api(a,o){o=o||{};try{const r=await fetch(API+"?a="+a,{method:o.method||"GET",headers:Object.assign({"Content-Type":"application/json"},AUTH?{Authorization:"Bearer "+AUTH.token}:{}),body:o.body?JSON.stringify(o.body):undefined});const j=await r.json();if(r.status==401&&AUTH&&a=="data"){AUTH=null;try{localStorage.removeItem("ptauth")}catch(e){}render()}return j}catch(e){return{}}}
 function push(now){if(!AUTH)return;clearTimeout(T);T=setTimeout(()=>api("data",{method:"PUT",body:{PL,prog}}),now?0:800)}
-function loginView(){$("#nav").innerHTML="";$("#main").innerHTML=cw('<h2 style="margin:0 0 4px">'+(L.mode=="login"?"Log in":"Create your account")+'</h2><p class="sub">Your plan and points are saved to your account, so they follow you to any device.</p><label style="flex-direction:column;align-items:stretch;margin-bottom:10px">Email<input class="ans" id="em" type="email" autocomplete="email"></label><label style="flex-direction:column;align-items:stretch">Password (8+ characters)<input class="ans" id="pw" type="password" autocomplete="'+(L.mode=="login"?"current-password":"new-password")+'"></label><div class="msg" id="lerr">'+L.err+'</div><div class="row"><button class="btn" data-au="go">'+(L.mode=="login"?"Log in":"Sign up")+'</button><button class="btn alt" data-au="mode">'+(L.mode=="login"?"I need an account":"I already have an account")+'</button></div>')}
+function loginView(){$("#nav").innerHTML="";$("#acct").innerHTML="";$("#main").innerHTML=cw('<h2 style="margin:0 0 4px">'+(L.mode=="login"?"Log in":"Create your account")+'</h2><p class="sub">Your plan and points are saved to your account, so they follow you to any device.</p><label style="flex-direction:column;align-items:stretch;margin-bottom:10px">Email<input class="ans" id="em" type="email" autocomplete="email"></label><label style="flex-direction:column;align-items:stretch">Password (8+ characters)<input class="ans" id="pw" type="password" autocomplete="'+(L.mode=="login"?"current-password":"new-password")+'"></label><div class="msg" id="lerr">'+L.err+'</div><div class="row"><button class="btn" data-au="go">'+(L.mode=="login"?"Log in":"Sign up")+'</button><button class="btn alt" data-au="mode">'+(L.mode=="login"?"I need an account":"I already have an account")+'</button></div>')}
 document.addEventListener("click",async ev=>{const t=ev.target.closest("button");if(!t||!t.dataset.au)return;
 if(t.dataset.au=="mode"){L.mode=L.mode=="login"?"signup":"login";L.err="";return loginView()}
 const email=$("#em").value,password=$("#pw").value;$("#lerr").textContent="Working...";t.disabled=true;
